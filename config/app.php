@@ -420,6 +420,6 @@ return [
     ],
 
     'Cors' => [
-        'AllowOrigin' => ['https://ambmcmdmem.github.io/numberle-php']
+        'AllowOrigin' => ['https://ambmcmdmem.github.io']
     ]
 ];
