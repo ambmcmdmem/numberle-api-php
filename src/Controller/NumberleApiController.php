@@ -31,9 +31,10 @@ class NumberleApiController extends AppController
     public function collation()
     {
         $this->loadComponent('Collation', [
-            'answer' => $this->Numberle->getAnswer()
+            'answer' => $this->Numberle->getAnswer(),
+            'proposedSolution' => $this->request->getData('proposedSolution')
         ]);
-        $this->set('collation', $this->Collation->statusOfProposedSolution($this->request->getData('proposedSolution')));
+        $this->set('collation', $this->Collation->statusOfProposedSolution());
         $this->set('_serialize', ['collation']);
     }
 
