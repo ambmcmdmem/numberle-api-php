@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Routing\Router;
+
 /**
  * NumberleApi Controller
  *
@@ -14,22 +16,22 @@ class NumberleApiController extends AppController
     public function initialize(): void
     {
         if (
-            empty($this->request->getData('checkDigit')) ||
-            (int)$this->request->getData('checkDigit') !==
-            1234509876 * (int)$this->request->getData('seed')
+            Router::url() !== '/numberleApi/numberleConfig' &&
+            (empty($this->request->getData('checkDigit')) ||
+                (int)$this->request->getData('checkDigit') !==
+                1234509876 * (int)$this->request->getData('seed'))
         )
             throw new \Exception('You cannot connect.');
-
         parent::initialize();
         $this->loadComponent('RequestHandler');
-        $this->loadComponent('Numberle', [
-            'seed' => $this->request->getData('seed')
-        ]);
         $this->viewBuilder()->setClassName('Json');
     }
 
-    public function collation()
+    public function collation(): void
     {
+        $this->loadComponent('Numberle', [
+            'seed' => $this->request->getData('seed')
+        ]);
         $this->loadComponent('Collation', [
             'answer' => $this->Numberle->getAnswer(),
             'proposedSolution' => $this->request->getData('proposedSolution')
@@ -38,9 +40,22 @@ class NumberleApiController extends AppController
         $this->set('_serialize', ['collation']);
     }
 
-    public function answer()
+    public function answer(): void
     {
+        $this->loadComponent('Numberle', [
+            'seed' => $this->request->getData('seed')
+        ]);
         $this->set('answer', $this->Numberle->getAnswer());
         $this->set('_serialize', ['answer']);
+    }
+
+    public function numberleConfig(): void
+    {
+        $this->loadComponent('NumberleConfig');
+        $this->set('numberleConfig', [
+            'maxNumberOfTries' => $this->NumberleConfig->getMaxNumberOfTries(),
+            'maxNumberOfInput' => $this->NumberleConfig->getMaxNumberOfInput(),
+        ]);
+        $this->set('_serialize', ['numberleConfig']);
     }
 }
