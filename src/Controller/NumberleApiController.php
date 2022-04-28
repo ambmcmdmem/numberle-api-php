@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Routing\Router;
+use Cake\Controller\ComponentRegistry;
+use App\Controller\Component\CollationComponent;
+use App\Controller\Component\NumberleComponent;
+use App\Controller\Component\NumberleConfigComponent;
 
 /**
  * NumberleApi Controller
@@ -13,6 +17,10 @@ use Cake\Routing\Router;
  */
 class NumberleApiController extends AppController
 {
+    private $Numberle;
+    private $Collation;
+    private $NumberleConfig;
+
     public function initialize(): void
     {
         if (
@@ -22,8 +30,16 @@ class NumberleApiController extends AppController
                 1234509876 * (int)$this->request->getData('seed'))
         )
             throw new \Exception('You cannot connect.');
+
         parent::initialize();
-        $this->loadComponent('RequestHandler');
+        $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
+            'seed' => $this->request->getData('seed')
+        ]);
+        $this->Collation = new CollationComponent(new ComponentRegistry(), [
+            'answer' => $this->Numberle->getAnswer(),
+            'proposedSolution' => $this->request->getData('proposedSolution')
+        ]);
+        $this->NumberleConfig = new NumberleConfigComponent(new ComponentRegistry());
         $this->viewBuilder()->setClassName('Json');
     }
 
@@ -39,29 +55,18 @@ class NumberleApiController extends AppController
 
     public function collation(): void
     {
-        $this->loadComponent('Numberle', [
-            'seed' => $this->request->getData('seed')
-        ]);
-        $this->loadComponent('Collation', [
-            'answer' => $this->Numberle->getAnswer(),
-            'proposedSolution' => $this->request->getData('proposedSolution')
-        ]);
         $this->set('collation', $this->Collation->statusOfProposedSolution());
         $this->set('_serialize', ['collation']);
     }
 
     public function answer(): void
     {
-        $this->loadComponent('Numberle', [
-            'seed' => $this->request->getData('seed')
-        ]);
         $this->set('answer', $this->Numberle->getAnswer());
         $this->set('_serialize', ['answer']);
     }
 
     public function numberleConfig(): void
     {
-        $this->loadComponent('NumberleConfig');
         $this->set('numberleConfig', [
             'maxNumberOfTries' => $this->NumberleConfig->getMaxNumberOfTries(),
             'maxNumberOfInput' => $this->NumberleConfig->getMaxNumberOfInput(),
