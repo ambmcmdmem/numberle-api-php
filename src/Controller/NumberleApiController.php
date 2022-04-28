@@ -27,6 +27,16 @@ class NumberleApiController extends AppController
         $this->viewBuilder()->setClassName('Json');
     }
 
+    public function validateSeed(): void
+    {
+        $seed = $this->request->getData('seed');
+        if ((int)$seed <= 0 || 1000 < (int)$seed || !preg_match('/^[0-9]+$/', $seed))
+            throw new \Exception('シードが適当な値でありません。');
+
+        $this->set('seedValid', true);
+        $this->set('_serialize', ['seedValid']);
+    }
+
     public function collation(): void
     {
         $this->loadComponent('Numberle', [
