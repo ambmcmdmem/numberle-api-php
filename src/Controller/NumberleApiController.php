@@ -17,6 +17,11 @@ use App\Controller\Component\NumberleConfigComponent;
  */
 class NumberleApiController extends AppController
 {
+    /**
+     * @var NumberleComponent $Numberle
+     * @var CollationComponent $Collation
+     * @var NumberleConfigComponent $NumberleConfig
+     */
     private $Numberle;
     private $Collation;
     private $NumberleConfig;
