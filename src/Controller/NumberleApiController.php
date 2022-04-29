@@ -38,6 +38,21 @@ class NumberleApiController extends AppController
             throw new AccessException('You cannot connect.');
 
         parent::initialize();
+        $this->viewBuilder()->setClassName('Json');
+    }
+
+    public function validateSeed(): void
+    {
+        $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
+            'seed' => $this->request->getData('seed')
+        ]);
+
+        $this->set('seedValid', true);
+        $this->set('_serialize', ['seedValid']);
+    }
+
+    public function collation(): void
+    {
         $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
             'seed' => $this->request->getData('seed')
         ]);
@@ -45,30 +60,25 @@ class NumberleApiController extends AppController
             'answer' => $this->Numberle->getAnswer(),
             'proposedSolution' => $this->request->getData('proposedSolution')
         ]);
-        $this->NumberleConfig = new NumberleConfigComponent(new ComponentRegistry());
-        $this->viewBuilder()->setClassName('Json');
-    }
 
-    public function validateSeed(): void
-    {
-        $this->set('seedValid', true);
-        $this->set('_serialize', ['seedValid']);
-    }
-
-    public function collation(): void
-    {
         $this->set('collation', $this->Collation->statusOfProposedSolution());
         $this->set('_serialize', ['collation']);
     }
 
     public function answer(): void
     {
+        $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
+            'seed' => $this->request->getData('seed')
+        ]);
+
         $this->set('answer', $this->Numberle->getAnswer());
         $this->set('_serialize', ['answer']);
     }
 
     public function numberleConfig(): void
     {
+        $this->NumberleConfig = new NumberleConfigComponent(new ComponentRegistry());
+
         $this->set('numberleConfig', [
             'maxNumberOfTries' => $this->NumberleConfig->getMaxNumberOfTries(),
             'maxNumberOfInput' => $this->NumberleConfig->getMaxNumberOfInput(),

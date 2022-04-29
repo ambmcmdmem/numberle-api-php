@@ -89,7 +89,7 @@ class NumberleApiControllerTest extends TestCase
     {
         $this->post('/numberleApi/validateSeed', [
             'seed' => '1001',
-            'checkDigit' => (string)(1234509876 * 1001)
+            'checkDigit' => (string)1234509876 * 1001
         ]);
         $this->assertResponseCode(500, 'シードが1000より大きい値であるのにエラーを送出しません。');
         $this->assertResponseContains('シードが適当な値でありません。');
