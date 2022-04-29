@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller\Component;
@@ -28,7 +29,14 @@ class NumberleComponentTest extends TestCase
     {
         parent::setUp();
         $registry = new ComponentRegistry();
-        $this->Numberle = new NumberleComponent($registry);
+        $this->Numberle = new NumberleComponent($registry, [
+            'seed' => 1
+        ]);
+    }
+
+    public function testCorrectAnswer(): void
+    {
+        $this->assertEquals(16298, $this->Numberle->getAnswer());
     }
 
     /**

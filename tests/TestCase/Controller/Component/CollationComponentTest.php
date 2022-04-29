@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller\Component;
@@ -28,7 +29,30 @@ class CollationComponentTest extends TestCase
     {
         parent::setUp();
         $registry = new ComponentRegistry();
-        $this->Collation = new CollationComponent($registry);
+        $this->Collation = new CollationComponent($registry, [
+            'proposedSolution' => '01234',
+            'answer' => '02468'
+        ]);
+    }
+
+    public function testCollation(): void
+    {
+        $this->assertEquals([
+            'correct',
+            'wrong',
+            'differentLocation',
+            'wrong',
+            'differentLocation'
+        ], $this->Collation->statusOfProposedSolution());
+    }
+
+    public function testConfigLengthIsNotCorrect(): void
+    {
+        $this->expectException(\Exception::class);
+        new CollationComponent(new ComponentRegistry(), [
+            'proposedSolution' => '012345',
+            'answer' => '02468'
+        ]);
     }
 
     /**

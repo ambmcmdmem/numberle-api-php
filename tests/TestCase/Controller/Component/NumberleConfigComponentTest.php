@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Test\TestCase\Controller\Component;
@@ -29,6 +30,12 @@ class NumberleConfigComponentTest extends TestCase
         parent::setUp();
         $registry = new ComponentRegistry();
         $this->NumberleConfig = new NumberleConfigComponent($registry);
+    }
+
+    public function testReceiveProperty(): void
+    {
+        $this->assertEquals(5, $this->NumberleConfig->getMaxNumberOfTries());
+        $this->assertEquals(5, $this->NumberleConfig->getMaxNumberOfInput());
     }
 
     /**
