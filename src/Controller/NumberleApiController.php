@@ -34,7 +34,7 @@ class NumberleApiController extends AppController
                 (int)$this->request->getData('checkDigit') !==
                 1234509876 * (int)$this->request->getData('seed'))
         )
-            throw new \Exception('You cannot connect.');
+            throw new \AccessException('You cannot connect.');
 
         parent::initialize();
         $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
@@ -52,7 +52,7 @@ class NumberleApiController extends AppController
     {
         $seed = $this->request->getData('seed');
         if ((int)$seed <= 0 || 1000 < (int)$seed || !preg_match('/^[0-9]+$/', $seed))
-            throw new \Exception('シードが適当な値でありません。');
+            throw new \SeedException('シードが適当な値でありません。');
 
         $this->set('seedValid', true);
         $this->set('_serialize', ['seedValid']);

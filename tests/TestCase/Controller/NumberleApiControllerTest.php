@@ -24,13 +24,13 @@ class NumberleApiControllerTest extends TestCase
      */
     protected $fixtures = [];
 
-    public function testAccessNumberleConfigWithOutData(): void
+    public function testAccessNumberleConfigWithoutData(): void
     {
         $this->get('/numberleApi/numberleConfig');
         $this->assertResponseOk('numberleConfigにアクセスできません。');
     }
 
-    public function testAccessValidateSeedWithOutData(): void
+    public function testAccessValidateSeedWithoutData(): void
     {
         $this->get('/numberleApi/validateSeed');
         $this->assertResponseCode(500, 'validateSeedへアクセスした際、エラーを送出しません。');
