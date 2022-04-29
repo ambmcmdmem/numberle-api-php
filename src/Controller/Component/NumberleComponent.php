@@ -6,6 +6,7 @@ namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
+use \SeedException;
 
 /**
  * Numberle component
@@ -32,6 +33,9 @@ class NumberleComponent extends Component
 
     public function initialize(array $config): void
     {
+        if ((int)$config['seed'] <= 0 || 1000 < (int)$config['seed'] || !preg_match('/^[0-9]+$/', $config['seed']))
+            throw new SeedException('シードが適当な値でありません。');
+
         $this->w = $config['seed'];
         $this->answer = implode(array_slice($this->shuffleReversibly(range(0, 9)), 0, 5));
     }

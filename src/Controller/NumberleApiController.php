@@ -10,7 +10,6 @@ use App\Controller\Component\CollationComponent;
 use App\Controller\Component\NumberleComponent;
 use App\Controller\Component\NumberleConfigComponent;
 use \AccessException;
-use \SeedException;
 
 /**
  * NumberleApi Controller
@@ -52,10 +51,6 @@ class NumberleApiController extends AppController
 
     public function validateSeed(): void
     {
-        $seed = $this->request->getData('seed');
-        if ((int)$seed <= 0 || 1000 < (int)$seed || !preg_match('/^[0-9]+$/', $seed))
-            throw new SeedException('シードが適当な値でありません。');
-
         $this->set('seedValid', true);
         $this->set('_serialize', ['seedValid']);
     }
