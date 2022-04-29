@@ -30,13 +30,13 @@ class NumberleComponentTest extends TestCase
         parent::setUp();
         $registry = new ComponentRegistry();
         $this->Numberle = new NumberleComponent($registry, [
-            'seed' => 1
+            'seed' => '1'
         ]);
     }
 
     public function testCorrectAnswer(): void
     {
-        $this->assertEquals(16298, $this->Numberle->getAnswer());
+        $this->assertEquals('16298', $this->Numberle->getAnswer());
     }
 
     /**
