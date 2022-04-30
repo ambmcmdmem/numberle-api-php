@@ -9,6 +9,8 @@ use Cake\Controller\ComponentRegistry;
 use Cake\TestSuite\TestCase;
 use \CollationException;
 
+use function App\Controller\Component\statusPattern;
+
 /**
  * App\Controller\Component\CollationComponent Test Case
  */
@@ -30,12 +32,15 @@ class CollationComponentTest extends TestCase
     {
         parent::setUp();
         $registry = new ComponentRegistry();
-        $this->Collation = new CollationComponent($registry, [
-            'proposedSolution' => '01234',
-        ]);
-        $this->failedCollation = new CollationComponent($registry, [
-            'proposedSolution' => '012345',
-        ]);
+        $this->Collation = new CollationComponent($registry);
+    }
+
+    public function testStatusIsInvalid(): void
+    {
+        $this->expectException(CollationException::class);
+        $this->expectExceptionMessage('pattern関数の引数のステータスにおかしい値が入っています。');
+        $this->expectExceptionCode(500);
+        statusPattern(true, 'invalid Status');
     }
 
     public function testCollation(): void
@@ -46,13 +51,31 @@ class CollationComponentTest extends TestCase
             'differentLocation',
             'wrong',
             'differentLocation'
-        ], $this->Collation->statusOfProposedSolution('02468'));
+        ], $this->Collation->statusOfProposedSolution('01234', '02468'));
     }
 
-    public function testConfigLengthIsNotCorrect(): void
+    public function testProposedSolutionIsEmpty(): void
     {
         $this->expectException(CollationException::class);
-        $this->failedCollation->statusOfProposedSolution('02468');
+        $this->expectExceptionMessage('提案された回答が空です。');
+        $this->expectExceptionCode(500);
+        $this->Collation->statusOfProposedSolution('', '02468');
+    }
+
+    public function testAnswerIsEmpty(): void
+    {
+        $this->expectException(CollationException::class);
+        $this->expectExceptionMessage('回答が空です。');
+        $this->expectExceptionCode(500);
+        $this->Collation->statusOfProposedSolution('01234', '');
+    }
+
+    public function testProposedSolutionLengthIsNotCorrect(): void
+    {
+        $this->expectException(CollationException::class);
+        $this->expectExceptionCode(500);
+        $this->expectExceptionMessage('提示された文字列長と回答の文字列長が異なります。');
+        $this->Collation->statusOfProposedSolution('012345', '02468');
     }
 
     /**

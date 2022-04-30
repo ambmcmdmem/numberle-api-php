@@ -36,12 +36,22 @@ class NumberleComponentTest extends TestCase
     public function testBelowSeed(): void
     {
         $this->expectException(SeedException::class);
+        $this->expectExceptionMessage('シードが0以下の値になっています。');
+        $this->expectExceptionCode(500);
         $this->Numberle->validateSeed(0);
+    }
+
+    public function testAppropriateSeed(): void
+    {
+        $this->assertEquals($this->Numberle->validateSeed(1), null);
+        $this->assertEquals($this->Numberle->validateSeed(1000), null);
     }
 
     public function testExceedSeed(): void
     {
         $this->expectException(SeedException::class);
+        $this->expectExceptionMessage('シードが1000より大きな値になっています。');
+        $this->expectExceptionCode(500);
         $this->Numberle->validateSeed(1001);
     }
 

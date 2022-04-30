@@ -12,6 +12,7 @@ use App\Controller\Component\NumberleConfigComponent;
 /**
  * Numberle component
  */
+
 class NumberleComponent extends Component
 {
     /**
@@ -51,12 +52,16 @@ class NumberleComponent extends Component
 
     public function validateSeed(int $seed): void
     {
-        if (
-            $seed <= 0 ||
-            1000 < $seed ||
-            !preg_match('/^[0-9]+$/', (string)$seed)
-        )
-            throw new SeedException('シードが適当な値でありません。');
+        validate([
+            pattern(
+                $seed > 0,
+                new SeedException('シードが0以下の値になっています。', 500)
+            ),
+            pattern(
+                $seed <= 1000,
+                new SeedException('シードが1000より大きな値になっています。', 500)
+            )
+        ]);
     }
 
     public function getAnswer(int $seed): string
