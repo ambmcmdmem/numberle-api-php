@@ -24,11 +24,11 @@ class NumberleApiControllerTest extends TestCase
      */
     protected $fixtures = [];
 
-    // public function testAccessNumberleConfigWithoutData(): void
-    // {
-    //     $this->post('/numberleApi/numberleConfig');
-    //     $this->assertResponseOk('numberleConfigにアクセスできません。');
-    // }
+    public function testAccessNumberleConfigWithoutData(): void
+    {
+        $this->post('/numberleApi/numberleConfig');
+        $this->assertResponseOk('numberleConfigにアクセスできません。');
+    }
 
     public function testAccessValidateSeedWithoutData(): void
     {
@@ -81,7 +81,7 @@ class NumberleApiControllerTest extends TestCase
             'seed' => '-1',
             'checkDigit' => '-1234509876'
         ]);
-        $this->assertResponseCode(400, 'シードが0以下の値であるのにエラーを送出しません。');
+        $this->assertResponseCode(500, 'シードが0以下の値であるのにエラーを送出しません。');
         $this->assertResponseContains('シードが適当な値でありません。');
     }
 
@@ -91,7 +91,7 @@ class NumberleApiControllerTest extends TestCase
             'seed' => '1001',
             'checkDigit' => (string)1234509876 * 1001
         ]);
-        $this->assertResponseCode(400, 'シードが1000より大きい値であるのにエラーを送出しません。');
+        $this->assertResponseCode(500, 'シードが1000より大きい値であるのにエラーを送出しません。');
         $this->assertResponseContains('シードが適当な値でありません。');
     }
 
