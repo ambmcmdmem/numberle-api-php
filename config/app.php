@@ -420,6 +420,6 @@ return [
     ],
 
     'Cors' => [
-        'AllowOrigin' => ['http://localhost:3000']
+        'AllowOrigin' => ['https://ambmcmdmem.github.io']
     ]
 ];
