@@ -15,6 +15,11 @@ use \CollationException;
 
 function pattern(bool $condition, string $status): array
 {
+    $allStatus = ['correct', 'differentLocation', 'wrong'];
+
+    if (!in_array($status, $allStatus))
+        throw new CollationException('pattern関数の引数のステータスにおかしい値が入っています。');
+
     return [
         'condition' => $condition,
         'status' => $status
