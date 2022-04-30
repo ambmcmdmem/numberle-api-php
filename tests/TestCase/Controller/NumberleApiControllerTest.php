@@ -74,34 +74,4 @@ class NumberleApiControllerTest extends TestCase
         ]);
         $this->assertResponseOk('適切な値を受け渡しているにもかかわらず、answerへとアクセスすることができません。');
     }
-
-    public function testBelowSeed(): void
-    {
-        $this->post('/numberleApi/validateSeed', [
-            'seed' => '-1',
-            'checkDigit' => '-1234509876'
-        ]);
-        $this->assertResponseCode(500, 'シードが0以下の値であるのにエラーを送出しません。');
-        $this->assertResponseContains('シードが適当な値でありません。');
-    }
-
-    public function testExceedSeed(): void
-    {
-        $this->post('/numberleApi/validateSeed', [
-            'seed' => '1001',
-            'checkDigit' => (string)1234509876 * 1001
-        ]);
-        $this->assertResponseCode(500, 'シードが1000より大きい値であるのにエラーを送出しません。');
-        $this->assertResponseContains('シードが適当な値でありません。');
-    }
-
-    public function testSeedIsDouble(): void
-    {
-        $this->post('/numberleApi/validateSeed', [
-            'seed' => '1.5',
-            'checkDigit' => (string)1234509876 * 1.5
-        ]);
-        $this->assertResponseCode(500, 'シードが整数でないのにエラーを送出しません。');
-        $this->assertResponseContains('シードが適当な値でありません。');
-    }
 }
