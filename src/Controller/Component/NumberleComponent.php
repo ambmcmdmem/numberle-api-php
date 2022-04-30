@@ -7,6 +7,7 @@ namespace App\Controller\Component;
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use \SeedException;
+use App\Controller\Component\NumberleConfigComponent;
 
 /**
  * Numberle component
@@ -20,25 +21,15 @@ class NumberleComponent extends Component
      */
     protected $_defaultConfig = [];
 
-    private $answer;
     /**
      *
      * x, y, z, wはXorShiftアルゴリズム実行のためのパラメータ
      * https://www.jstatsoft.org/article/view/v008i14
      */
-    private $x = 31415926535;
-    private $y = 8979323846;
-    private $z = 2643383279;
+    private $x;
+    private $y;
+    private $z;
     private $w;
-
-    public function initialize(array $config): void
-    {
-        if ((int)$config['seed'] <= 0 || 1000 < (int)$config['seed'] || !preg_match('/^[0-9]+$/', $config['seed']))
-            throw new SeedException('シードが適当な値でありません。');
-
-        $this->w = $config['seed'];
-        $this->answer = implode(array_slice($this->shuffleReversibly(range(0, 9)), 0, 5));
-    }
 
     private function xorshift(): int
     {
@@ -58,8 +49,32 @@ class NumberleComponent extends Component
         }, $target);
     }
 
-    public function getAnswer(): string
+    public function validateSeed(int $seed): void
     {
-        return $this->answer;
+        if (
+            $seed <= 0 ||
+            1000 < $seed ||
+            !preg_match('/^[0-9]+$/', (string)$seed)
+        )
+            throw new SeedException('シードが適当な値でありません。');
+    }
+
+    public function getAnswer(int $seed): string
+    {
+        $this->validateSeed($seed);
+
+        $this->x = 31415926535;
+        $this->y = 8979323846;
+        $this->z = 2643383279;
+        $this->w = $seed;
+
+        $numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
+        return implode(
+            array_slice(
+                $this->shuffleReversibly(range(0, 9)),
+                0,
+                $numberleComponent->getMaxNumberOfInput()
+            )
+        );
     }
 }

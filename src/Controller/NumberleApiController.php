@@ -26,59 +26,48 @@ class NumberleApiController extends AppController
     private $Numberle;
     private $Collation;
     private $NumberleConfig;
+    private $seed;
 
     public function initialize(): void
     {
+        $this->seed = (int)$this->request->getData('seed');
         if (
             Router::url() !== '/numberleApi/numberleConfig' &&
             (empty($this->request->getData('checkDigit')) ||
-                (int)$this->request->getData('checkDigit') !==
-                1234509876 * (int)$this->request->getData('seed'))
+                (int)$this->request->getData('checkDigit') !== 1234509876 * $this->seed)
         )
             throw new AccessException('You cannot connect.');
 
         parent::initialize();
+        $this->Numberle = new NumberleComponent(new ComponentRegistry());
+        $this->Collation = new CollationComponent(new ComponentRegistry(), [
+            'proposedSolution' => $this->request->getData('proposedSolution')
+        ]);
+        $this->NumberleConfig = new NumberleConfigComponent(new ComponentRegistry());
         $this->viewBuilder()->setClassName('Json');
     }
 
     public function validateSeed(): void
     {
-        $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
-            'seed' => $this->request->getData('seed')
-        ]);
-
+        $this->Numberle->validateSeed($this->seed);
         $this->set('seedValid', true);
         $this->set('_serialize', ['seedValid']);
     }
 
     public function collation(): void
     {
-        $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
-            'seed' => $this->request->getData('seed')
-        ]);
-        $this->Collation = new CollationComponent(new ComponentRegistry(), [
-            'answer' => $this->Numberle->getAnswer(),
-            'proposedSolution' => $this->request->getData('proposedSolution')
-        ]);
-
-        $this->set('collation', $this->Collation->statusOfProposedSolution());
+        $this->set('collation', $this->Collation->statusOfProposedSolution($this->Numberle->getAnswer($this->seed)));
         $this->set('_serialize', ['collation']);
     }
 
     public function answer(): void
     {
-        $this->Numberle = new NumberleComponent(new ComponentRegistry(), [
-            'seed' => $this->request->getData('seed')
-        ]);
-
-        $this->set('answer', $this->Numberle->getAnswer());
+        $this->set('answer', $this->Numberle->getAnswer($this->seed));
         $this->set('_serialize', ['answer']);
     }
 
     public function numberleConfig(): void
     {
-        $this->NumberleConfig = new NumberleConfigComponent(new ComponentRegistry());
-
         $this->set('numberleConfig', [
             'maxNumberOfTries' => $this->NumberleConfig->getMaxNumberOfTries(),
             'maxNumberOfInput' => $this->NumberleConfig->getMaxNumberOfInput(),
