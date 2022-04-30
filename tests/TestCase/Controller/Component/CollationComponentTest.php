@@ -7,6 +7,7 @@ namespace App\Test\TestCase\Controller\Component;
 use App\Controller\Component\CollationComponent;
 use Cake\Controller\ComponentRegistry;
 use Cake\TestSuite\TestCase;
+use \CollationException;
 
 /**
  * App\Controller\Component\CollationComponent Test Case
@@ -31,7 +32,9 @@ class CollationComponentTest extends TestCase
         $registry = new ComponentRegistry();
         $this->Collation = new CollationComponent($registry, [
             'proposedSolution' => '01234',
-            'answer' => '02468'
+        ]);
+        $this->failedCollation = new CollationComponent($registry, [
+            'proposedSolution' => '012345',
         ]);
     }
 
@@ -43,16 +46,13 @@ class CollationComponentTest extends TestCase
             'differentLocation',
             'wrong',
             'differentLocation'
-        ], $this->Collation->statusOfProposedSolution());
+        ], $this->Collation->statusOfProposedSolution('02468'));
     }
 
     public function testConfigLengthIsNotCorrect(): void
     {
-        $this->expectException(\Exception::class);
-        new CollationComponent(new ComponentRegistry(), [
-            'proposedSolution' => '012345',
-            'answer' => '02468'
-        ]);
+        $this->expectException(CollationException::class);
+        $this->failedCollation->statusOfProposedSolution('02468');
     }
 
     /**

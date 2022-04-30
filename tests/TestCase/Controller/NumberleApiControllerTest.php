@@ -26,7 +26,7 @@ class NumberleApiControllerTest extends TestCase
 
     public function testAccessNumberleConfigWithoutData(): void
     {
-        $this->get('/numberleApi/numberleConfig');
+        $this->post('/numberleApi/numberleConfig');
         $this->assertResponseOk('numberleConfigにアクセスできません。');
     }
 
