@@ -19,12 +19,12 @@ function pattern(bool $validity, \Exception $exception): array
 
 function validate(array $validityAndExceptions): void
 {
-  $validityAndException = collection($validityAndExceptions)
+  $matchedValidityAndException = collection($validityAndExceptions)
     ->firstMatch(
       [
         'validity' => false
       ]
     );
-  if ($validityAndException)
-    throw $validityAndException['exception'];
+  if ($matchedValidityAndException)
+    throw $matchedValidityAndException['exception'];
 }

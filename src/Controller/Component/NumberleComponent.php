@@ -22,6 +22,7 @@ class NumberleComponent extends Component
      */
     protected $_defaultConfig = [];
 
+    private $numberleComponent;
     /**
      *
      * x, y, z, wはXorShiftアルゴリズム実行のためのパラメータ
@@ -31,6 +32,11 @@ class NumberleComponent extends Component
     private $y;
     private $z;
     private $w;
+
+    public function initialize(array $config): void
+    {
+        $this->numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
+    }
 
     private function xorshift(): int
     {
@@ -72,10 +78,9 @@ class NumberleComponent extends Component
         $this->z = 2643383279;
         $this->w = $seed;
 
-        $numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
         return implode(
             collection($this->shuffleReversibly(range(0, 9)))
-                ->take($numberleComponent->getMaxNumberOfInput())
+                ->take($this->numberleComponent->getMaxNumberOfInput())
                 ->toArray()
         );
     }

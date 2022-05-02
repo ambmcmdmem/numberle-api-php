@@ -11,21 +11,6 @@ use \CollationException;
  * Collation component
  */
 
-function statusPattern(bool $condition, string $status): array
-{
-
-    if (
-        !collection(['correct', 'differentLocation', 'wrong'])
-            ->contains($status)
-    )
-        throw new CollationException('pattern関数の引数のステータスに想定されていない値が入っています。', 500);
-
-    return [
-        'condition' => $condition,
-        'status' => $status
-    ];
-}
-
 class CollationComponent extends Component
 {
     /**
@@ -34,7 +19,24 @@ class CollationComponent extends Component
      * @var array<string, mixed>
      */
     protected $_defaultConfig = [];
-    private $answer;
+
+    private $all_status;
+
+    public function initialize(array $config): void
+    {
+        $this->all_status = collection(['correct', 'differentLocation', 'wrong']);
+    }
+
+    private function statusPattern(callable $condition, string $status): array
+    {
+        if (!$this->all_status->contains($status))
+            throw new CollationException('pattern関数の引数のステータスに想定されていない値が入っています。', 500);
+
+        return [
+            'condition' => $condition,
+            'status' => $status
+        ];
+    }
 
     public function statusOfProposedSolution(string $proposedSolution, string $answer): array
     {
@@ -53,17 +55,35 @@ class CollationComponent extends Component
             )
         ]);
 
-        $this->answer = $answer;
 
         return collection(str_split($proposedSolution))
-            ->map(function (string $proposedSolutionCharacter, int $proposedSolutionCharacterNo): string {
+            ->map(function (
+                string $proposedSolutionCharacter,
+                int $proposedSolutionCharacterNo
+            ) use ($answer): string {
                 return collection([
-                    statusPattern($proposedSolutionCharacter === substr($this->answer, $proposedSolutionCharacterNo, 1), 'correct'),
-                    statusPattern(strpos($this->answer, $proposedSolutionCharacter) !== false, 'differentLocation'),
-                    statusPattern(true, 'wrong')
-                ])->firstMatch([
-                    'condition' => true
-                ])['status'];
+                    $this->statusPattern(
+                        function () use ($proposedSolutionCharacter, $proposedSolutionCharacterNo, $answer): bool {
+                            return $proposedSolutionCharacter ===
+                                substr($answer, $proposedSolutionCharacterNo, 1);
+                        },
+                        'correct'
+                    ),
+                    $this->statusPattern(
+                        function () use ($proposedSolutionCharacter, $answer): bool {
+                            return strpos($answer, $proposedSolutionCharacter) !== false;
+                        },
+                        'differentLocation'
+                    ),
+                    $this->statusPattern(
+                        function (): bool {
+                            return true;
+                        },
+                        'wrong'
+                    )
+                ])->filter(function (array $conditionAndStatus): bool {
+                    return $conditionAndStatus['condition']();
+                })->first()['status'];
             })->toArray();
     }
 }
