@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Routing\Router;
 use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\CollationComponent;
 use App\Controller\Component\NumberleComponent;
@@ -32,15 +31,17 @@ class NumberleApiController extends AppController
         return (int)$this->getRequest()->getData('seed');
     }
 
-    public function initialize(): void
+    private function validateRequest(): void
     {
         if (
-            Router::url() !== '/numberleApi/numberleConfig' &&
-            (empty($this->getRequest()->getData('checkDigit')) ||
-                (int)$this->getRequest()->getData('checkDigit') !== 1234509876 * $this->getSeed())
+            empty($this->getRequest()->getData('checkDigit')) ||
+            (int)$this->getRequest()->getData('checkDigit') !== $this->getSeed() * 1234509876
         )
             throw new BadRequestException('不正なリクエストです。');
+    }
 
+    public function initialize(): void
+    {
         parent::initialize();
         $this->Numberle = new NumberleComponent(new ComponentRegistry());
         $this->Collation = new CollationComponent(new ComponentRegistry());
@@ -50,6 +51,7 @@ class NumberleApiController extends AppController
 
     public function validateSeed(): void
     {
+        $this->validateRequest();
         $this->Numberle->validateSeed($this->getSeed());
         $this->set('seedValid', true);
         $this->viewBuilder()->setOption('serialize', ['seedValid']);
@@ -57,6 +59,8 @@ class NumberleApiController extends AppController
 
     public function collation(): void
     {
+        $this->validateRequest();
+        $this->Numberle->validateSeed($this->getSeed());
         $this->set(
             'collation',
             $this->Collation->statusOfProposedSolution(
@@ -69,6 +73,8 @@ class NumberleApiController extends AppController
 
     public function answer(): void
     {
+        $this->validateRequest();
+        $this->Numberle->validateSeed($this->getSeed());
         $this->set('answer', $this->Numberle->getAnswer($this->getSeed()));
         $this->viewBuilder()->setOption('serialize', ['answer']);
     }

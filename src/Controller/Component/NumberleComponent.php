@@ -66,8 +66,6 @@ class NumberleComponent extends Component
 
     public function getAnswer(int $seed): string
     {
-        $this->validateSeed($seed);
-
         $this->x = 31415926535;
         $this->y = 8979323846;
         $this->z = 2643383279;
