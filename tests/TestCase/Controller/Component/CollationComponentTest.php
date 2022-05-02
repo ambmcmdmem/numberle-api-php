@@ -38,7 +38,7 @@ class CollationComponentTest extends TestCase
     public function testStatusIsInvalid(): void
     {
         $this->expectException(CollationException::class);
-        $this->expectExceptionMessage('pattern関数の引数のステータスにおかしい値が入っています。');
+        $this->expectExceptionMessage('pattern関数の引数のステータスに想定されていない値が入っています。');
         $this->expectExceptionCode(500);
         statusPattern(true, 'invalid Status');
     }
@@ -57,7 +57,7 @@ class CollationComponentTest extends TestCase
     public function testProposedSolutionIsEmpty(): void
     {
         $this->expectException(CollationException::class);
-        $this->expectExceptionMessage('提案された回答が空です。');
+        $this->expectExceptionMessage('提案された文字列が空です。');
         $this->expectExceptionCode(500);
         $this->Collation->statusOfProposedSolution('', '02468');
     }
@@ -74,7 +74,7 @@ class CollationComponentTest extends TestCase
     {
         $this->expectException(CollationException::class);
         $this->expectExceptionCode(500);
-        $this->expectExceptionMessage('提示された文字列長と回答の文字列長が異なります。');
+        $this->expectExceptionMessage('提示された文字列の長さと回答の文字列長が異なります。');
         $this->Collation->statusOfProposedSolution('012345', '02468');
     }
 
