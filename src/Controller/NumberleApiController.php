@@ -10,7 +10,6 @@ use App\Controller\Component\NumberleComponent;
 use App\Controller\Component\NumberleConfigComponent;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Routing\Router;
 
 /**
  * NumberleApi Controller
@@ -54,7 +53,7 @@ class NumberleApiController extends AppController
     public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
-        if (Router::url() !== '/numberleApi/numberleConfig') {
+        if ($this->getRequest()->getParam('action') !== 'numberleConfig') {
             $this->validateRequest();
             $this->Numberle->validateSeed($this->getSeed());
         }
