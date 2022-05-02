@@ -35,14 +35,6 @@ class CollationComponentTest extends TestCase
         $this->Collation = new CollationComponent($registry);
     }
 
-    public function testStatusIsInvalid(): void
-    {
-        $this->expectException(CollationException::class);
-        $this->expectExceptionMessage('pattern関数の引数のステータスに想定されていない値が入っています。');
-        $this->expectExceptionCode(500);
-        statusPattern(true, 'invalid Status');
-    }
-
     public function testCollation(): void
     {
         $this->assertEquals([
