@@ -18,7 +18,7 @@ function statusPattern(bool $condition, string $status): array
     $allStatus = ['correct', 'differentLocation', 'wrong'];
 
     if (!in_array($status, $allStatus))
-        throw new CollationException('pattern関数の引数のステータスにおかしい値が入っています。', 500);
+        throw new CollationException('pattern関数の引数のステータスに想定されていない値が入っています。', 500);
 
     return [
         'condition' => $condition,
@@ -41,7 +41,7 @@ class CollationComponent extends Component
         validate([
             pattern(
                 (bool)$proposedSolution,
-                new CollationException('提案された回答が空です。', 500)
+                new CollationException('提案された文字列が空です。', 500)
             ),
             pattern(
                 (bool)$answer,
@@ -49,7 +49,7 @@ class CollationComponent extends Component
             ),
             pattern(
                 strlen($answer) === strlen($proposedSolution),
-                new CollationException('提示された文字列長と回答の文字列長が異なります。', 500)
+                new CollationException('提示された文字列の長さと回答の文字列長が異なります。', 500)
             )
         ]);
 

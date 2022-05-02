@@ -27,12 +27,17 @@ class NumberleApiController extends AppController
     private $Collation;
     private $NumberleConfig;
 
+    private function getSeed(): int
+    {
+        return (int)$this->getRequest()->getData('seed');
+    }
+
     public function initialize(): void
     {
         if (
             Router::url() !== '/numberleApi/numberleConfig' &&
-            (empty($this->request->getData('checkDigit')) ||
-                (int)$this->request->getData('checkDigit') !== 1234509876 * (int)$this->request->getData('seed'))
+            (empty($this->getRequest()->getData('checkDigit')) ||
+                (int)$this->getRequest()->getData('checkDigit') !== 1234509876 * $this->getSeed())
         )
             throw new BadRequestException('不正なリクエストです。');
 
@@ -45,7 +50,7 @@ class NumberleApiController extends AppController
 
     public function validateSeed(): void
     {
-        $this->Numberle->validateSeed((int)$this->request->getData('seed'));
+        $this->Numberle->validateSeed($this->getSeed());
         $this->set('seedValid', true);
         $this->viewBuilder()->setOption('serialize', ['seedValid']);
     }
@@ -55,8 +60,8 @@ class NumberleApiController extends AppController
         $this->set(
             'collation',
             $this->Collation->statusOfProposedSolution(
-                $this->request->getData('proposedSolution'),
-                $this->Numberle->getAnswer((int)$this->request->getData('seed'))
+                $this->getRequest()->getData('proposedSolution'),
+                $this->Numberle->getAnswer($this->getSeed())
             )
         );
         $this->viewBuilder()->setOption('serialize', ['collation']);
@@ -64,7 +69,7 @@ class NumberleApiController extends AppController
 
     public function answer(): void
     {
-        $this->set('answer', $this->Numberle->getAnswer((int)$this->request->getData('seed')));
+        $this->set('answer', $this->Numberle->getAnswer($this->getSeed()));
         $this->viewBuilder()->setOption('serialize', ['answer']);
     }
 
