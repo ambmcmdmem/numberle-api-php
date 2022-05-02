@@ -9,22 +9,20 @@ class CollationException extends Exception
 {
 }
 
-function pattern(bool $validity, \Exception $exception): array
+function pattern(callable $validation, \Exception $exception): array
 {
   return [
-    'validity' => $validity,
+    'validation' => $validation,
     'exception' => $exception
   ];
 }
 
-function validate(array $validityAndExceptions): void
+function validate(array $validationAndExceptions): void
 {
-  $matchedValidityAndException = collection($validityAndExceptions)
-    ->firstMatch(
-      [
-        'validity' => false
-      ]
-    );
-  if ($matchedValidityAndException)
-    throw $matchedValidityAndException['exception'];
+  $matchedValidationAndException = collection($validationAndExceptions)
+    ->filter(function (array $validationAndException): bool {
+      return !$validationAndException['validation']();
+    })->first();
+  if ($matchedValidationAndException)
+    throw $matchedValidationAndException['exception'];
 }

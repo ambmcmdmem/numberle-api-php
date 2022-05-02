@@ -42,15 +42,21 @@ class CollationComponent extends Component
     {
         validate([
             pattern(
-                (bool)$proposedSolution,
+                function () use ($proposedSolution): bool {
+                    return (bool)$proposedSolution;
+                },
                 new CollationException('提案された文字列が空です。', 500)
             ),
             pattern(
-                (bool)$answer,
+                function () use ($answer): bool {
+                    return (bool)$answer;
+                },
                 new CollationException('回答が空です。', 500)
             ),
             pattern(
-                strlen($answer) === strlen($proposedSolution),
+                function () use ($answer, $proposedSolution): bool {
+                    return strlen($answer) === strlen($proposedSolution);
+                },
                 new CollationException('提示された文字列の長さと回答の文字列長が異なります。', 500)
             )
         ]);
