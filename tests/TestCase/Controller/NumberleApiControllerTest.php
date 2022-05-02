@@ -34,7 +34,7 @@ class NumberleApiControllerTest extends TestCase
     {
         $this->get('/numberleApi/validateSeed');
         $this->assertResponseCode(400, 'validateSeedへアクセスした際、エラーを送出しません。');
-        $this->assertResponseContains('You cannot connect.');
+        $this->assertResponseContains('不正なリクエストです。');
     }
 
     public function testAccessValidateSeedWithCorrectData(): void
@@ -53,7 +53,7 @@ class NumberleApiControllerTest extends TestCase
             'checkDigit' => '0'
         ]);
         $this->assertResponseCode(400, 'シード、checkDigitらがおかしいのにエラーを送出しません。');
-        $this->assertResponseContains('You cannot connect.');
+        $this->assertResponseContains('不正なリクエストです。');
     }
 
     public function testAccessCollationWithCorrectData(): void

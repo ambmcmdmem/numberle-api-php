@@ -26,17 +26,15 @@ class NumberleApiController extends AppController
     private $Numberle;
     private $Collation;
     private $NumberleConfig;
-    private $seed;
 
     public function initialize(): void
     {
-        $this->seed = (int)$this->request->getData('seed');
         if (
             Router::url() !== '/numberleApi/numberleConfig' &&
             (empty($this->request->getData('checkDigit')) ||
-                (int)$this->request->getData('checkDigit') !== 1234509876 * $this->seed)
+                (int)$this->request->getData('checkDigit') !== 1234509876 * (int)$this->request->getData('seed'))
         )
-            throw new BadRequestException('You cannot connect.');
+            throw new BadRequestException('不正なリクエストです。');
 
         parent::initialize();
         $this->Numberle = new NumberleComponent(new ComponentRegistry());
@@ -47,7 +45,7 @@ class NumberleApiController extends AppController
 
     public function validateSeed(): void
     {
-        $this->Numberle->validateSeed($this->seed);
+        $this->Numberle->validateSeed((int)$this->request->getData('seed'));
         $this->set('seedValid', true);
         $this->viewBuilder()->setOption('serialize', ['seedValid']);
     }
@@ -58,7 +56,7 @@ class NumberleApiController extends AppController
             'collation',
             $this->Collation->statusOfProposedSolution(
                 $this->request->getData('proposedSolution'),
-                $this->Numberle->getAnswer($this->seed)
+                $this->Numberle->getAnswer((int)$this->request->getData('seed'))
             )
         );
         $this->viewBuilder()->setOption('serialize', ['collation']);
@@ -66,7 +64,7 @@ class NumberleApiController extends AppController
 
     public function answer(): void
     {
-        $this->set('answer', $this->Numberle->getAnswer($this->seed));
+        $this->set('answer', $this->Numberle->getAnswer((int)$this->request->getData('seed')));
         $this->viewBuilder()->setOption('serialize', ['answer']);
     }
 
