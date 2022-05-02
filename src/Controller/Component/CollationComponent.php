@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Component;
 
+use Cake\Collection\Collection;
 use Cake\Controller\Component;
 use \CollationException;
+use \Validation;
 
 /**
  * Collation component
@@ -20,6 +22,9 @@ class CollationComponent extends Component
      */
     protected $_defaultConfig = [];
 
+    /**
+     * @var Collection $all_status
+     */
     private $all_status;
 
     public function initialize(array $config): void
@@ -40,20 +45,20 @@ class CollationComponent extends Component
 
     public function statusOfProposedSolution(string $proposedSolution, string $answer): array
     {
-        validate([
-            pattern(
+        Validation::validate([
+            new Validation(
                 function () use ($proposedSolution): bool {
                     return (bool)$proposedSolution;
                 },
                 new CollationException('提案された文字列が空です。', 500)
             ),
-            pattern(
+            new Validation(
                 function () use ($answer): bool {
                     return (bool)$answer;
                 },
                 new CollationException('回答が空です。', 500)
             ),
-            pattern(
+            new Validation(
                 function () use ($answer, $proposedSolution): bool {
                     return strlen($answer) === strlen($proposedSolution);
                 },
