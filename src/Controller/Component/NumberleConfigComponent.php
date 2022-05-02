@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Controller\ComponentRegistry;
-use phpDocumentor\Reflection\Types\Callable_;
-use PHPUnit\Framework\Constraint\Callback;
 
 /**
  * NumberleConfig component

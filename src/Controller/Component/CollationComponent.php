@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Controller\ComponentRegistry;
-use phpDocumentor\Reflection\Types\Callable_;
 use \CollationException;
 
 /**
@@ -15,9 +13,11 @@ use \CollationException;
 
 function statusPattern(bool $condition, string $status): array
 {
-    $allStatus = ['correct', 'differentLocation', 'wrong'];
 
-    if (!in_array($status, $allStatus))
+    if (
+        !collection(['correct', 'differentLocation', 'wrong'])
+            ->contains($status)
+    )
         throw new CollationException('pattern関数の引数のステータスに想定されていない値が入っています。', 500);
 
     return [
@@ -55,17 +55,15 @@ class CollationComponent extends Component
 
         $this->answer = $answer;
 
-        return array_map(
-            function (string $proposedSolutionCharacter, int $proposedSolutionCharacterNo): string {
-                $conditionAndStatus = [
+        return collection(str_split($proposedSolution))
+            ->map(function (string $proposedSolutionCharacter, int $proposedSolutionCharacterNo): string {
+                return collection([
                     statusPattern($proposedSolutionCharacter === substr($this->answer, $proposedSolutionCharacterNo, 1), 'correct'),
                     statusPattern(strpos($this->answer, $proposedSolutionCharacter) !== false, 'differentLocation'),
                     statusPattern(true, 'wrong')
-                ];
-                return $conditionAndStatus[array_search(true, array_column($conditionAndStatus, 'condition'))]['status'];
-            },
-            str_split($proposedSolution),
-            range(0, strlen($proposedSolution) - 1)
-        );
+                ])->firstMatch([
+                    'condition' => true
+                ])['status'];
+            })->toArray();
     }
 }

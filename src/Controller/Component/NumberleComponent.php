@@ -43,11 +43,12 @@ class NumberleComponent extends Component
 
     private function shuffleReversibly(array $target): array
     {
-        return array_reduce(array_reverse(range(1, count($target) - 1)), function (array $toBeShuffled, int $i): array {
-            $j = floor(abs($this->xorshift())) % ($i + 1);
-            [$toBeShuffled[$i], $toBeShuffled[$j]] = [$toBeShuffled[$j], $toBeShuffled[$i]];
-            return $toBeShuffled;
-        }, $target);
+        return collection(range(count($target) - 1, 1))
+            ->reduce(function (array $toBeShuffled, int $i): array {
+                $j = floor(abs($this->xorshift())) % ($i + 1);
+                [$toBeShuffled[$i], $toBeShuffled[$j]] = [$toBeShuffled[$j], $toBeShuffled[$i]];
+                return $toBeShuffled;
+            }, $target);
     }
 
     public function validateSeed(int $seed): void
@@ -73,11 +74,9 @@ class NumberleComponent extends Component
 
         $numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
         return implode(
-            array_slice(
-                $this->shuffleReversibly(range(0, 9)),
-                0,
-                $numberleComponent->getMaxNumberOfInput()
-            )
+            collection($this->shuffleReversibly(range(0, 9)))
+                ->take($numberleComponent->getMaxNumberOfInput())
+                ->toArray()
         );
     }
 }
