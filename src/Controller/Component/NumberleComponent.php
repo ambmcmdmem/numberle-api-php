@@ -61,11 +61,15 @@ class NumberleComponent extends Component
     {
         validate([
             pattern(
-                $seed > 0,
+                function () use ($seed): bool {
+                    return $seed > 0;
+                },
                 new SeedException('シードが0以下の値になっています。', 500)
             ),
             pattern(
-                $seed <= 1000,
+                function () use ($seed): bool {
+                    return $seed <= 1000;
+                },
                 new SeedException('シードが1000より大きな値になっています。', 500)
             )
         ]);
