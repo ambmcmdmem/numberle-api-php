@@ -17,9 +17,14 @@ function pattern(bool $validity, \Exception $exception): array
   ];
 }
 
-function validate(array $validityAndException): void
+function validate(array $validityAndExceptions): void
 {
-  $matchedKey = array_search(false, array_column($validityAndException, 'validity'));
-  if ($matchedKey !== false)
-    throw $validityAndException[$matchedKey]['exception'];
+  $validityAndException = collection($validityAndExceptions)
+    ->firstMatch(
+      [
+        'validity' => false
+      ]
+    );
+  if ($validityAndException)
+    throw $validityAndException['exception'];
 }
