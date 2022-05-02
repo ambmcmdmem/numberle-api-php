@@ -8,7 +8,9 @@ use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\CollationComponent;
 use App\Controller\Component\NumberleComponent;
 use App\Controller\Component\NumberleConfigComponent;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Routing\Router;
 
 /**
  * NumberleApi Controller
@@ -49,18 +51,23 @@ class NumberleApiController extends AppController
         $this->viewBuilder()->setClassName('Json');
     }
 
+    public function beforeFilter(EventInterface $event): void
+    {
+        parent::beforeFilter($event);
+        if (Router::url() !== '/numberleApi/numberleConfig') {
+            $this->validateRequest();
+            $this->Numberle->validateSeed($this->getSeed());
+        }
+    }
+
     public function validateSeed(): void
     {
-        $this->validateRequest();
-        $this->Numberle->validateSeed($this->getSeed());
         $this->set('seedValid', true);
         $this->viewBuilder()->setOption('serialize', ['seedValid']);
     }
 
     public function collation(): void
     {
-        $this->validateRequest();
-        $this->Numberle->validateSeed($this->getSeed());
         $this->set(
             'collation',
             $this->Collation->statusOfProposedSolution(
@@ -73,8 +80,6 @@ class NumberleApiController extends AppController
 
     public function answer(): void
     {
-        $this->validateRequest();
-        $this->Numberle->validateSeed($this->getSeed());
         $this->set('answer', $this->Numberle->getAnswer($this->getSeed()));
         $this->viewBuilder()->setOption('serialize', ['answer']);
     }
