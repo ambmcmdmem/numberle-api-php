@@ -2,33 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\Component;
+namespace App\Controller\Component\CollationComponent\_Private;
 
-use Cake\Controller\Component;
-use \CollationException;
 use \Validations;
 use \Validation;
+use \CollationException;
 
-/**
- * Collation component
- */
-
-class CollationComponent extends Component
+class ProposedSolutionValidations
 {
-    /**
-     * Default configuration.
-     *
-     * @var array<string, mixed>
-     */
-    protected $_defaultConfig = [];
+    private static $instance;
+    private $validations;
 
-    private $all_status;
-    private $proposedSolutionValidations;
-
-    public function initialize(array $config): void
+    private function __construct()
     {
-        $this->all_status = collection(['correct', 'differentLocation', 'wrong']);
-        $this->proposedSolutionValidations = (new Validations())->next(
+        $this->validations = (new Validations())->next(
             new Validation(
                 function (array $props): bool {
                     return (bool)$props['proposedSolution'];
@@ -50,6 +37,49 @@ class CollationComponent extends Component
                 new CollationException('解答案の文字列長と解答の文字列長が異なります。', 500)
             )
         );
+    }
+
+    public static function getInstance(): ProposedSolutionValidations
+    {
+        if (!isset(self::$instance))
+            self::$instance = new ProposedSolutionValidations();
+
+        return self::$instance;
+    }
+
+    public function getValidations(): Validations
+    {
+        return $this->validations;
+    }
+}
+
+
+namespace App\Controller\Component;
+
+use Cake\Controller\Component;
+use \CollationException;
+use App\Controller\Component\CollationComponent\_Private\ProposedSolutionValidations;
+
+/**
+ * Collation component
+ */
+
+class CollationComponent extends Component
+{
+    /**
+     * Default configuration.
+     *
+     * @var array<string, mixed>
+     */
+    protected $_defaultConfig = [];
+
+    private $all_status;
+    private $proposedSolutionValidations;
+
+    public function initialize(array $config): void
+    {
+        $this->all_status = collection(['correct', 'differentLocation', 'wrong']);
+        $this->proposedSolutionValidations = ProposedSolutionValidations::getInstance()->getValidations();
     }
 
     private function statusPattern(callable $condition, string $status): array

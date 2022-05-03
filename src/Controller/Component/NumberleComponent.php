@@ -2,14 +2,57 @@
 
 declare(strict_types=1);
 
+namespace App\Controller\Component\NumberleComponent\_Private;
+
+use \Validations;
+use \Validation;
+use \SeedException;
+
+class SeedValidations
+{
+    private static $instance;
+    private $validations;
+
+    private function __construct()
+    {
+        $this->validations = (new Validations())->next(
+            new Validation(
+                function (array $props): bool {
+                    return $props['seed'] > 0;
+                },
+                new SeedException('シードが0以下の値になっています。', 500)
+            )
+        )->next(
+            new Validation(
+                function (array $props): bool {
+                    return $props['seed'] <= 1000;
+                },
+                new SeedException('シードが1000より大きな値になっています。', 500)
+            )
+        );
+    }
+
+    public static function getInstance(): SeedValidations
+    {
+        if (!isset(self::$instance))
+            self::$instance = new SeedValidations();
+
+        return self::$instance;
+    }
+
+    public function getValidations(): Validations
+    {
+        return $this->validations;
+    }
+}
+
+
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
-use \SeedException;
 use App\Controller\Component\NumberleConfigComponent;
-use \Validations;
-use \Validation;
+use App\Controller\Component\NumberleComponent\_Private\SeedValidations;
 
 /**
  * Numberle component
@@ -39,21 +82,7 @@ class NumberleComponent extends Component
     public function initialize(array $config): void
     {
         $this->numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
-        $this->seedValidations = (new Validations())->next(
-            new Validation(
-                function (array $props): bool {
-                    return $props['seed'] > 0;
-                },
-                new SeedException('シードが0以下の値になっています。', 500)
-            )
-        )->next(
-            new Validation(
-                function (array $props): bool {
-                    return $props['seed'] <= 1000;
-                },
-                new SeedException('シードが1000より大きな値になっています。', 500)
-            )
-        );
+        $this->seedValidations = SeedValidations::getInstance()->getValidations();
     }
 
     private function xorshift(): int
