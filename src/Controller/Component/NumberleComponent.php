@@ -11,6 +11,7 @@ use \SeedException;
 class SeedValidations
 {
     private static SeedValidations $instance;
+    private Validations $validations;
 
     private function __construct()
     {

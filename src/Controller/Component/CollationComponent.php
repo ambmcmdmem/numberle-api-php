@@ -11,6 +11,7 @@ use \CollationException;
 class ProposedSolutionValidations
 {
     private static ProposedSolutionValidations $instance;
+    private Validations $validations;
 
     private function __construct()
     {
