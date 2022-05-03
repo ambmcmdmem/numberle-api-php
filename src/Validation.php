@@ -2,25 +2,26 @@
 
 declare(strict_types=1);
 
-use \Exception;
-
-class Validation
+final class Validation
 {
+  /**
+   * @var callable $validation
+   */
   private $validation;
   private ?Exception $exception;
 
-  function __construct(callable $validation, ?Exception $exception)
+  final public function __construct(callable $validation, ?Exception $exception)
   {
     $this->validation = $validation;
     $this->exception = $exception;
   }
 
-  public function getValidation(): callable
+  final public function getValidation(): callable
   {
     return $this->validation;
   }
 
-  public function throwIfInvalid(): void
+  final public function throwIfInvalid(): void
   {
     if ($this->exception)
       throw $this->exception;
