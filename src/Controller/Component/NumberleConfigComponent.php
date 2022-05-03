@@ -9,7 +9,7 @@ use Cake\Controller\Component;
 /**
  * NumberleConfig component
  */
-class NumberleConfigComponent extends Component
+final class NumberleConfigComponent extends Component
 {
     /**
      * Default configuration.
@@ -21,12 +21,12 @@ class NumberleConfigComponent extends Component
     private int $maxNumberOfTries = 5;
     private int $maxNumberOfInput = 5;
 
-    public function getMaxNumberOfTries(): int
+    final public function getMaxNumberOfTries(): int
     {
         return $this->maxNumberOfTries;
     }
 
-    public function getMaxNumberOfInput(): int
+    final public function getMaxNumberOfInput(): int
     {
         return $this->maxNumberOfInput;
     }

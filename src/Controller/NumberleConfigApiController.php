@@ -12,18 +12,18 @@ use Cake\Controller\ComponentRegistry;
  *
  * @method \App\Model\Entity\NumberleConfigApi[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class NumberleConfigApiController extends AppController
+final class NumberleConfigApiController extends AppController
 {
     private NumberleConfigComponent $NumberleConfig;
 
-    public function initialize(): void
+    final public function initialize(): void
     {
         parent::initialize();
         $this->NumberleConfig = new NumberleConfigComponent(new ComponentRegistry());
         $this->viewBuilder()->setClassName('Json');
     }
 
-    public function index()
+    final public function index()
     {
         $this->set('numberleConfig', [
             'maxNumberOfTries' => $this->NumberleConfig->getMaxNumberOfTries(),

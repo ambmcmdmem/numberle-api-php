@@ -8,12 +8,12 @@ use \Validations;
 use \Validation;
 use \CollationException;
 
-class ProposedSolutionValidations
+final class ProposedSolutionValidations
 {
     private static ProposedSolutionValidations $instance;
     private Validations $validations;
 
-    private function __construct()
+    final private function __construct()
     {
         $this->validations = (new Validations())->next(
             new Validation(
@@ -60,7 +60,7 @@ use Cake\Collection\Collection;
  * Collation component
  */
 
-class CollationComponent extends Component
+final class CollationComponent extends Component
 {
     /**
      * Default configuration.
@@ -72,7 +72,7 @@ class CollationComponent extends Component
     private Collection $all_status;
     private \Validations $proposedSolutionValidations;
 
-    public function initialize(array $config): void
+    final public function initialize(array $config): void
     {
         $this->all_status = collection(['correct', 'differentLocation', 'wrong']);
         $this->proposedSolutionValidations = ProposedSolutionValidations::getValidations();
@@ -89,7 +89,7 @@ class CollationComponent extends Component
         ];
     }
 
-    public function statusOfProposedSolution(string $proposedSolution, string $answer): array
+    final public function statusOfProposedSolution(string $proposedSolution, string $answer): array
     {
         $this->proposedSolutionValidations->validate([
             'proposedSolution' => $proposedSolution,

@@ -15,7 +15,7 @@ use Cake\Http\Exception\BadRequestException;
  *
  * @method \App\Model\Entity\NumberleApi[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class NumberleApiController extends AppController
+final class NumberleApiController extends AppController
 {
     private NumberleComponent $Numberle;
     private CollationComponent $Collation;
@@ -34,7 +34,7 @@ class NumberleApiController extends AppController
             throw new BadRequestException('不正なリクエストです。');
     }
 
-    public function initialize(): void
+    final public function initialize(): void
     {
         parent::initialize();
         $this->Numberle = new NumberleComponent(new ComponentRegistry());
@@ -42,20 +42,20 @@ class NumberleApiController extends AppController
         $this->viewBuilder()->setClassName('Json');
     }
 
-    public function beforeFilter(EventInterface $event): void
+    final public function beforeFilter(EventInterface $event): void
     {
         parent::beforeFilter($event);
         $this->validateRequest();
         $this->Numberle->validateSeed($this->getSeed());
     }
 
-    public function validateSeed(): void
+    final public function validateSeed(): void
     {
         $this->set('seedValid', true);
         $this->viewBuilder()->setOption('serialize', ['seedValid']);
     }
 
-    public function collation(): void
+    final public function collation(): void
     {
         $this->set(
             'collation',
@@ -67,7 +67,7 @@ class NumberleApiController extends AppController
         $this->viewBuilder()->setOption('serialize', ['collation']);
     }
 
-    public function answer(): void
+    final public function answer(): void
     {
         $this->set('answer', $this->Numberle->getAnswer($this->getSeed()));
         $this->viewBuilder()->setOption('serialize', ['answer']);

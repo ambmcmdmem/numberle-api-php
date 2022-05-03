@@ -8,7 +8,7 @@ use \Validations;
 use \Validation;
 use \SeedException;
 
-class SeedValidations
+final class SeedValidations
 {
     private static SeedValidations $instance;
     private Validations $validations;
@@ -53,7 +53,7 @@ use App\Controller\Component\NumberleComponent\_Private\SeedValidations;
  * Numberle component
  */
 
-class NumberleComponent extends Component
+final class NumberleComponent extends Component
 {
     /**
      * Default configuration.
@@ -74,7 +74,7 @@ class NumberleComponent extends Component
     private int $z;
     private int $w;
 
-    public function initialize(array $config): void
+    final public function initialize(array $config): void
     {
         $this->numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
         $this->seedValidations = SeedValidations::getValidations();
@@ -99,14 +99,14 @@ class NumberleComponent extends Component
             }, $target);
     }
 
-    public function validateSeed(int $seed): void
+    final public function validateSeed(int $seed): void
     {
         $this->seedValidations->validate([
             'seed' => $seed
         ]);
     }
 
-    public function getAnswer(int $seed): string
+    final public function getAnswer(int $seed): string
     {
         $this->x = 31415926535;
         $this->y = 8979323846;
