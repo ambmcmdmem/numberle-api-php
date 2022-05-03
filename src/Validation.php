@@ -9,7 +9,7 @@ class Validation
   private $validation;
   private $exception;
 
-  function __construct(?callable $validation, ?Exception $exception)
+  function __construct(callable $validation, ?Exception $exception)
   {
     $this->validation = $validation;
     $this->exception = $exception;

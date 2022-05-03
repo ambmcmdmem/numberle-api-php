@@ -25,6 +25,7 @@ class NumberleComponent extends Component
     protected $_defaultConfig = [];
 
     private $numberleComponent;
+    private $seedValidations;
     /**
      *
      * x, y, z, wはXorShiftアルゴリズム実行のためのパラメータ
@@ -38,6 +39,21 @@ class NumberleComponent extends Component
     public function initialize(array $config): void
     {
         $this->numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
+        $this->seedValidations = (new Validations())->next(
+            new Validation(
+                function (array $props): bool {
+                    return $props['seed'] > 0;
+                },
+                new SeedException('シードが0以下の値になっています。', 500)
+            )
+        )->next(
+            new Validation(
+                function (array $props): bool {
+                    return $props['seed'] <= 1000;
+                },
+                new SeedException('シードが1000より大きな値になっています。', 500)
+            )
+        );
     }
 
     private function xorshift(): int
@@ -61,21 +77,9 @@ class NumberleComponent extends Component
 
     public function validateSeed(int $seed): void
     {
-        (new Validations())->next(
-            new Validation(
-                function () use ($seed): bool {
-                    return $seed > 0;
-                },
-                new SeedException('シードが0以下の値になっています。', 500)
-            )
-        )->next(
-            new Validation(
-                function () use ($seed): bool {
-                    return $seed <= 1000;
-                },
-                new SeedException('シードが1000より大きな値になっています。', 500)
-            )
-        )->validate();
+        $this->seedValidations->validate([
+            'seed' => $seed
+        ]);
     }
 
     public function getAnswer(int $seed): string
