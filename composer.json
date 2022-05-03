@@ -30,7 +30,8 @@
             "App\\": "src/"
         },
         "files": [
-            "src/Exception.php"
+            "src/Exception.php",
+            "src/Validation.php"
         ]
     },
     "autoload-dev": {
