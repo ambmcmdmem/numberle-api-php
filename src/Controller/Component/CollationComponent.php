@@ -2,11 +2,63 @@
 
 declare(strict_types=1);
 
+namespace App\Controller\Component\CollationComponent\_Private;
+
+use \Validations;
+use \Validation;
+use \CollationException;
+
+class ProposedSolutionValidations
+{
+    private static $instance;
+    private $validations;
+
+    private function __construct()
+    {
+        $this->validations = (new Validations())->next(
+            new Validation(
+                function (array $props): bool {
+                    return (bool)$props['proposedSolution'];
+                },
+                new CollationException('解答案が空です。', 500)
+            )
+        )->next(
+            new Validation(
+                function (array $props): bool {
+                    return (bool)$props['answer'];
+                },
+                new CollationException('解答が空です。', 500)
+            )
+        )->next(
+            new Validation(
+                function (array $props): bool {
+                    return strlen($props['answer']) === strlen($props['proposedSolution']);
+                },
+                new CollationException('解答案の文字列長と解答の文字列長が異なります。', 500)
+            )
+        );
+    }
+
+    public static function getInstance(): ProposedSolutionValidations
+    {
+        if (!isset(self::$instance))
+            self::$instance = new ProposedSolutionValidations();
+
+        return self::$instance;
+    }
+
+    public function getValidations(): Validations
+    {
+        return $this->validations;
+    }
+}
+
+
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 use \CollationException;
-use \ProposedSolutionValidations;
+use App\Controller\Component\CollationComponent\_Private\ProposedSolutionValidations;
 
 /**
  * Collation component
