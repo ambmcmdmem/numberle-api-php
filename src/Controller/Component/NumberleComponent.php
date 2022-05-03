@@ -8,6 +8,7 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use \SeedException;
 use App\Controller\Component\NumberleConfigComponent;
+use \Validations;
 use \Validation;
 
 /**
@@ -60,16 +61,20 @@ class NumberleComponent extends Component
 
     public function validateSeed(int $seed): void
     {
-        (new Validation())->next(
-            function () use ($seed): bool {
-                return $seed > 0;
-            },
-            new SeedException('シードが0以下の値になっています。', 500)
+        (new Validations())->next(
+            new Validation(
+                function () use ($seed): bool {
+                    return $seed > 0;
+                },
+                new SeedException('シードが0以下の値になっています。', 500)
+            )
         )->next(
-            function () use ($seed): bool {
-                return $seed <= 1000;
-            },
-            new SeedException('シードが1000より大きな値になっています。', 500)
+            new Validation(
+                function () use ($seed): bool {
+                    return $seed <= 1000;
+                },
+                new SeedException('シードが1000より大きな値になっています。', 500)
+            )
         )->validate();
     }
 
