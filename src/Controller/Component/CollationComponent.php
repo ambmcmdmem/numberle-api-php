@@ -6,8 +6,7 @@ namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 use \CollationException;
-use \Validations;
-use \Validation;
+use \ProposedSolutionValidations;
 
 /**
  * Collation component
@@ -28,28 +27,7 @@ class CollationComponent extends Component
     public function initialize(array $config): void
     {
         $this->all_status = collection(['correct', 'differentLocation', 'wrong']);
-        $this->proposedSolutionValidations = (new Validations())->next(
-            new Validation(
-                function (array $props): bool {
-                    return (bool)$props['proposedSolution'];
-                },
-                new CollationException('解答案が空です。', 500)
-            )
-        )->next(
-            new Validation(
-                function (array $props): bool {
-                    return (bool)$props['answer'];
-                },
-                new CollationException('解答が空です。', 500)
-            )
-        )->next(
-            new Validation(
-                function (array $props): bool {
-                    return strlen($props['answer']) === strlen($props['proposedSolution']);
-                },
-                new CollationException('解答案の文字列長と解答の文字列長が異なります。', 500)
-            )
-        );
+        $this->proposedSolutionValidations = ProposedSolutionValidations::getInstance()->getValidations();
     }
 
     private function statusPattern(callable $condition, string $status): array

@@ -6,10 +6,9 @@ namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
-use \SeedException;
 use App\Controller\Component\NumberleConfigComponent;
-use \Validations;
-use \Validation;
+use \SeedValidations;
+
 
 /**
  * Numberle component
@@ -39,21 +38,7 @@ class NumberleComponent extends Component
     public function initialize(array $config): void
     {
         $this->numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
-        $this->seedValidations = (new Validations())->next(
-            new Validation(
-                function (array $props): bool {
-                    return $props['seed'] > 0;
-                },
-                new SeedException('シードが0以下の値になっています。', 500)
-            )
-        )->next(
-            new Validation(
-                function (array $props): bool {
-                    return $props['seed'] <= 1000;
-                },
-                new SeedException('シードが1000より大きな値になっています。', 500)
-            )
-        );
+        $this->seedValidations = SeedValidations::getInstance()->getValidations();
     }
 
     private function xorshift(): int
