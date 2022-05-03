@@ -11,7 +11,6 @@ use \SeedException;
 class SeedValidations
 {
     private static $instance;
-    private $validations;
 
     private function __construct()
     {
@@ -32,17 +31,12 @@ class SeedValidations
         );
     }
 
-    public static function getInstance(): SeedValidations
+    final public static function getValidations(): Validations
     {
         if (!isset(self::$instance))
             self::$instance = new SeedValidations();
 
-        return self::$instance;
-    }
-
-    public function getValidations(): Validations
-    {
-        return $this->validations;
+        return self::$instance->validations;
     }
 }
 
@@ -82,7 +76,7 @@ class NumberleComponent extends Component
     public function initialize(array $config): void
     {
         $this->numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
-        $this->seedValidations = SeedValidations::getInstance()->getValidations();
+        $this->seedValidations = SeedValidations::getValidations();
     }
 
     private function xorshift(): int
