@@ -15,7 +15,9 @@ class Validations
   function __construct(array $validationAndExceptions = [])
   {
     $this->validationAndExceptions = $validationAndExceptions;
-    $this->defaultValidation = new Validation(null, null);
+    $this->defaultValidation = new Validation(function (): bool {
+      return true;
+    }, null);
   }
 
   public function next(Validation $validation): Validations
@@ -24,11 +26,11 @@ class Validations
     return $this;
   }
 
-  public function validate(): void
+  public function validate(array $props): void
   {
     (collection($this->validationAndExceptions)->filter(
-      function (Validation $validationAndException): bool {
-        return !$validationAndException->getValidation()();
+      function (Validation $validationAndException) use ($props): bool {
+        return !$validationAndException->getValidation()($props);
       }
     )->first() ?? $this->defaultValidation)
       ->throwIfInvalid();

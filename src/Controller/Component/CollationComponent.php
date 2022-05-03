@@ -23,10 +23,33 @@ class CollationComponent extends Component
     protected $_defaultConfig = [];
 
     private $all_status;
+    private $proposedSolutionValidations;
 
     public function initialize(array $config): void
     {
         $this->all_status = collection(['correct', 'differentLocation', 'wrong']);
+        $this->proposedSolutionValidations = (new Validations())->next(
+            new Validation(
+                function (array $props): bool {
+                    return (bool)$props['proposedSolution'];
+                },
+                new CollationException('解答案が空です。', 500)
+            )
+        )->next(
+            new Validation(
+                function (array $props): bool {
+                    return (bool)$props['answer'];
+                },
+                new CollationException('解答が空です。', 500)
+            )
+        )->next(
+            new Validation(
+                function (array $props): bool {
+                    return strlen($props['answer']) === strlen($props['proposedSolution']);
+                },
+                new CollationException('解答案の文字列長と解答の文字列長が異なります。', 500)
+            )
+        );
     }
 
     private function statusPattern(callable $condition, string $status): array
@@ -42,28 +65,10 @@ class CollationComponent extends Component
 
     public function statusOfProposedSolution(string $proposedSolution, string $answer): array
     {
-        (new Validations())->next(
-            new Validation(
-                function () use ($proposedSolution): bool {
-                    return (bool)$proposedSolution;
-                },
-                new CollationException('提案された文字列が空です。', 500)
-            )
-        )->next(
-            new Validation(
-                function () use ($answer): bool {
-                    return (bool)$answer;
-                },
-                new CollationException('回答が空です。', 500)
-            )
-        )->next(
-            new Validation(
-                function () use ($answer, $proposedSolution): bool {
-                    return strlen($answer) === strlen($proposedSolution);
-                },
-                new CollationException('提示された文字列の長さと回答の文字列長が異なります。', 500)
-            )
-        )->validate();
+        $this->proposedSolutionValidations->validate([
+            'proposedSolution' => $proposedSolution,
+            'answer' => $answer
+        ]);
 
         return collection(str_split($proposedSolution))
             ->map(function (

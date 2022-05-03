@@ -49,7 +49,7 @@ class CollationComponentTest extends TestCase
     public function testProposedSolutionIsEmpty(): void
     {
         $this->expectException(CollationException::class);
-        $this->expectExceptionMessage('提案された文字列が空です。');
+        $this->expectExceptionMessage('解答案が空です。');
         $this->expectExceptionCode(500);
         $this->Collation->statusOfProposedSolution('', '02468');
     }
@@ -57,7 +57,7 @@ class CollationComponentTest extends TestCase
     public function testAnswerIsEmpty(): void
     {
         $this->expectException(CollationException::class);
-        $this->expectExceptionMessage('回答が空です。');
+        $this->expectExceptionMessage('解答が空です。');
         $this->expectExceptionCode(500);
         $this->Collation->statusOfProposedSolution('01234', '');
     }
@@ -66,7 +66,7 @@ class CollationComponentTest extends TestCase
     {
         $this->expectException(CollationException::class);
         $this->expectExceptionCode(500);
-        $this->expectExceptionMessage('提示された文字列の長さと回答の文字列長が異なります。');
+        $this->expectExceptionMessage('解答案の文字列長と解答の文字列長が異なります。');
         $this->Collation->statusOfProposedSolution('012345', '02468');
     }
 
