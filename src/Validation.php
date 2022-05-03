@@ -6,45 +6,23 @@ use \Exception;
 
 class Validation
 {
-  /**
-   * @var array $validationAndExceptions
-   */
-  private $validationAndExceptions;
+  private $validation;
+  private $exception;
 
-  function __construct(array $validationAndExceptions = [])
+  function __construct(?callable $validation, ?Exception $exception)
   {
-    $this->validationAndExceptions = $validationAndExceptions;
+    $this->validation = $validation;
+    $this->exception = $exception;
   }
 
-  public function next(callable $validation, Exception $exception): Validation
+  public function getValidation(): callable
   {
-    return new Validation(
-      array_merge(
-        $this->validationAndExceptions,
-        [
-          [
-            'validation' => $validation,
-            'exception' => $exception
-          ]
-        ]
-      )
-    );
+    return $this->validation;
   }
 
-  public function validate(): void
+  public function throwIfInvalid(): void
   {
-    (new Validation(
-      collection($this->validationAndExceptions)->filter(
-        function (array $validationAndException): bool {
-          return !$validationAndException['validation']();
-        }
-      )->first() ?? []
-    ))->throwIfInvalid();
-  }
-
-  private function throwIfInvalid(): void
-  {
-    if (!empty($this->validationAndExceptions['exception']))
-      throw $this->validationAndExceptions['exception'];
+    if ($this->exception)
+      throw $this->exception;
   }
 }

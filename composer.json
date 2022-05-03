@@ -31,7 +31,8 @@
         },
         "files": [
             "src/Exception.php",
-            "src/Validation.php"
+            "src/Validation.php",
+            "src/Validations.php"
         ]
     },
     "autoload-dev": {
