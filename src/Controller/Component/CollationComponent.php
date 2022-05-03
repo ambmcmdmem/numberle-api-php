@@ -10,8 +10,8 @@ use \CollationException;
 
 class ProposedSolutionValidations
 {
-    private static $instance;
-    private $validations;
+    private static ProposedSolutionValidations $instance;
+    private Validations $validations;
 
     private function __construct()
     {
@@ -39,17 +39,12 @@ class ProposedSolutionValidations
         );
     }
 
-    public static function getInstance(): ProposedSolutionValidations
+    final public static function getValidations(): Validations
     {
         if (!isset(self::$instance))
             self::$instance = new ProposedSolutionValidations();
 
-        return self::$instance;
-    }
-
-    public function getValidations(): Validations
-    {
-        return $this->validations;
+        return self::$instance->validations;
     }
 }
 
@@ -59,6 +54,7 @@ namespace App\Controller\Component;
 use Cake\Controller\Component;
 use \CollationException;
 use App\Controller\Component\CollationComponent\_Private\ProposedSolutionValidations;
+use Cake\Collection\Collection;
 
 /**
  * Collation component
@@ -73,13 +69,13 @@ class CollationComponent extends Component
      */
     protected $_defaultConfig = [];
 
-    private $all_status;
-    private $proposedSolutionValidations;
+    private Collection $all_status;
+    private \Validations $proposedSolutionValidations;
 
     public function initialize(array $config): void
     {
         $this->all_status = collection(['correct', 'differentLocation', 'wrong']);
-        $this->proposedSolutionValidations = ProposedSolutionValidations::getInstance()->getValidations();
+        $this->proposedSolutionValidations = ProposedSolutionValidations::getValidations();
     }
 
     private function statusPattern(callable $condition, string $status): array

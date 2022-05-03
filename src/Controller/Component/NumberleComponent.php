@@ -10,8 +10,8 @@ use \SeedException;
 
 class SeedValidations
 {
-    private static $instance;
-    private $validations;
+    private static SeedValidations $instance;
+    private Validations $validations;
 
     private function __construct()
     {
@@ -32,17 +32,12 @@ class SeedValidations
         );
     }
 
-    public static function getInstance(): SeedValidations
+    final public static function getValidations(): Validations
     {
         if (!isset(self::$instance))
             self::$instance = new SeedValidations();
 
-        return self::$instance;
-    }
-
-    public function getValidations(): Validations
-    {
-        return $this->validations;
+        return self::$instance->validations;
     }
 }
 
@@ -67,22 +62,22 @@ class NumberleComponent extends Component
      */
     protected $_defaultConfig = [];
 
-    private $numberleComponent;
-    private $seedValidations;
+    private NumberleConfigComponent $numberleComponent;
+    private \Validations $seedValidations;
     /**
      *
      * x, y, z, wはXorShiftアルゴリズム実行のためのパラメータ
      * https://www.jstatsoft.org/article/view/v008i14
      */
-    private $x;
-    private $y;
-    private $z;
-    private $w;
+    private int $x;
+    private int $y;
+    private int $z;
+    private int $w;
 
     public function initialize(array $config): void
     {
         $this->numberleComponent = new NumberleConfigComponent(new ComponentRegistry());
-        $this->seedValidations = SeedValidations::getInstance()->getValidations();
+        $this->seedValidations = SeedValidations::getValidations();
     }
 
     private function xorshift(): int

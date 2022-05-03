@@ -17,12 +17,8 @@ use Cake\Http\Exception\BadRequestException;
  */
 class NumberleApiController extends AppController
 {
-    /**
-     * @var NumberleComponent $Numberle
-     * @var CollationComponent $Collation
-     */
-    private $Numberle;
-    private $Collation;
+    private NumberleComponent $Numberle;
+    private CollationComponent $Collation;
 
     private function getSeed(): int
     {

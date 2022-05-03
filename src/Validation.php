@@ -7,7 +7,7 @@ use \Exception;
 class Validation
 {
   private $validation;
-  private $exception;
+  private ?Exception $exception;
 
   function __construct(callable $validation, ?Exception $exception)
   {
