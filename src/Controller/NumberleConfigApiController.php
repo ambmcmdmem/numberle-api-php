@@ -14,10 +14,7 @@ use Cake\Controller\ComponentRegistry;
  */
 class NumberleConfigApiController extends AppController
 {
-    /**
-     * @var NumberleConfigComponent $NumberleConfig
-     */
-    private $NumberleConfig;
+    private NumberleConfigComponent $NumberleConfig;
 
     public function initialize(): void
     {

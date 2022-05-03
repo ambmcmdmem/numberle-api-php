@@ -6,11 +6,8 @@ use \Validation;
 
 class Validations
 {
-  /**
-   * @var array $validationAndExceptions
-   */
-  private $validationAndExceptions;
-  private $defaultValidation;
+  private array $validationAndExceptions;
+  private Validation $defaultValidation;
 
   function __construct(array $validationAndExceptions = [])
   {

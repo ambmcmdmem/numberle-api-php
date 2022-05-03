@@ -18,8 +18,8 @@ class NumberleConfigComponent extends Component
      */
     protected $_defaultConfig = [];
 
-    private $maxNumberOfTries = 5;
-    private $maxNumberOfInput = 5;
+    private int $maxNumberOfTries = 5;
+    private int $maxNumberOfInput = 5;
 
     public function getMaxNumberOfTries(): int
     {

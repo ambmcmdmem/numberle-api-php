@@ -10,7 +10,7 @@ use \CollationException;
 
 class ProposedSolutionValidations
 {
-    private static $instance;
+    private static ProposedSolutionValidations $instance;
 
     private function __construct()
     {
@@ -53,6 +53,7 @@ namespace App\Controller\Component;
 use Cake\Controller\Component;
 use \CollationException;
 use App\Controller\Component\CollationComponent\_Private\ProposedSolutionValidations;
+use Cake\Collection\Collection;
 
 /**
  * Collation component
@@ -67,8 +68,8 @@ class CollationComponent extends Component
      */
     protected $_defaultConfig = [];
 
-    private $all_status;
-    private $proposedSolutionValidations;
+    private Collection $all_status;
+    private \Validations $proposedSolutionValidations;
 
     public function initialize(array $config): void
     {
