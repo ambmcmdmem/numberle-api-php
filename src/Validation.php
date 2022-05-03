@@ -6,32 +6,45 @@ use \Exception;
 
 class Validation
 {
-  private $validation;
-  private $exception;
+  /**
+   * @var array $validationAndExceptions
+   */
+  private $validationAndExceptions;
 
-  public function __construct(callable $validation, Exception $exception)
+  function __construct(array $validationAndExceptions = [])
   {
-    $this->validation = $validation;
-    $this->exception = $exception;
+    $this->validationAndExceptions = $validationAndExceptions;
   }
 
-  public static function validate(array $validationAndExceptions): void
+  public function next(callable $validation, Exception $exception): Validation
   {
-    $matchedValidationAndException = collection($validationAndExceptions)
-      ->filter(function (Validation $validationAndException): bool {
-        return !$validationAndException->getValidation()();
-      })->first();
-    if ($matchedValidationAndException)
-      throw $matchedValidationAndException->throwException();
+    return new Validation(
+      array_merge(
+        $this->validationAndExceptions,
+        [
+          [
+            'validation' => $validation,
+            'exception' => $exception
+          ]
+        ]
+      )
+    );
   }
 
-  public function getValidation(): callable
+  public function validate(): void
   {
-    return $this->validation;
+    (new Validation(
+      collection($this->validationAndExceptions)->filter(
+        function (array $validationAndException): bool {
+          return !$validationAndException['validation']();
+        }
+      )->first() ?? []
+    ))->throwIfInvalid();
   }
 
-  public function throwException(): void
+  private function throwIfInvalid(): void
   {
-    throw $this->exception;
+    if (!empty($this->validationAndExceptions['exception']))
+      throw $this->validationAndExceptions['exception'];
   }
 }

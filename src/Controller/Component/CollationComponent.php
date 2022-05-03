@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Component;
 
-use Cake\Collection\Collection;
 use Cake\Controller\Component;
 use \CollationException;
 use \Validation;
@@ -22,9 +21,6 @@ class CollationComponent extends Component
      */
     protected $_defaultConfig = [];
 
-    /**
-     * @var Collection $all_status
-     */
     private $all_status;
 
     public function initialize(array $config): void
@@ -45,27 +41,22 @@ class CollationComponent extends Component
 
     public function statusOfProposedSolution(string $proposedSolution, string $answer): array
     {
-        Validation::validate([
-            new Validation(
-                function () use ($proposedSolution): bool {
-                    return (bool)$proposedSolution;
-                },
-                new CollationException('提案された文字列が空です。', 500)
-            ),
-            new Validation(
-                function () use ($answer): bool {
-                    return (bool)$answer;
-                },
-                new CollationException('回答が空です。', 500)
-            ),
-            new Validation(
-                function () use ($answer, $proposedSolution): bool {
-                    return strlen($answer) === strlen($proposedSolution);
-                },
-                new CollationException('提示された文字列の長さと回答の文字列長が異なります。', 500)
-            )
-        ]);
-
+        (new Validation())->next(
+            function () use ($proposedSolution): bool {
+                return (bool)$proposedSolution;
+            },
+            new CollationException('提案された文字列が空です。', 500)
+        )->next(
+            function () use ($answer): bool {
+                return (bool)$answer;
+            },
+            new CollationException('回答が空です。', 500)
+        )->next(
+            function () use ($answer, $proposedSolution): bool {
+                return strlen($answer) === strlen($proposedSolution);
+            },
+            new CollationException('提示された文字列の長さと回答の文字列長が異なります。', 500)
+        )->validate();
 
         return collection(str_split($proposedSolution))
             ->map(function (

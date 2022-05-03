@@ -60,20 +60,17 @@ class NumberleComponent extends Component
 
     public function validateSeed(int $seed): void
     {
-        Validation::validate([
-            new Validation(
-                function () use ($seed): bool {
-                    return $seed > 0;
-                },
-                new SeedException('シードが0以下の値になっています。', 500)
-            ),
-            new Validation(
-                function () use ($seed): bool {
-                    return $seed <= 1000;
-                },
-                new SeedException('シードが1000より大きな値になっています。', 500)
-            )
-        ]);
+        (new Validation())->next(
+            function () use ($seed): bool {
+                return $seed > 0;
+            },
+            new SeedException('シードが0以下の値になっています。', 500)
+        )->next(
+            function () use ($seed): bool {
+                return $seed <= 1000;
+            },
+            new SeedException('シードが1000より大きな値になっています。', 500)
+        )->validate();
     }
 
     public function getAnswer(int $seed): string
