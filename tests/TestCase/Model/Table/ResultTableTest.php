@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Test\TestCase\Model\Table;
@@ -23,9 +24,7 @@ class ResultTableTest extends TestCase
      *
      * @var array<string>
      */
-    protected $fixtures = [
-        'app.Result',
-    ];
+    protected $fixtures = [];
 
     /**
      * setUp method
@@ -49,16 +48,5 @@ class ResultTableTest extends TestCase
         unset($this->Result);
 
         parent::tearDown();
-    }
-
-    /**
-     * Test validationDefault method
-     *
-     * @return void
-     * @uses \App\Model\Table\ResultTable::validationDefault()
-     */
-    public function testValidationDefault(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
     }
 }

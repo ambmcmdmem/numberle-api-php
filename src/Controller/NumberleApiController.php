@@ -69,12 +69,13 @@ final class NumberleApiController extends AppController
 
     final public function answer(): void
     {
-        // $resultTable = $this->getTableLocator()->get('result');
-        // $result = $resultTable->newEntity([
-        //     'seed' => 10,
-        //     'numberOfTries' => 4
-        // ]);
-        // $resultTable->save($result);
+        $resultTable = $this->getTableLocator()->get('result');
+        $result = $resultTable->newEntity([
+            'seed' => $this->getSeed(),
+            'numberOfTries' => (int)$this->getRequest()->getData('numberOfTries')
+        ]);
+        if (!$resultTable->save($result))
+            throw new BadRequestException('不正なリクエストです。');
 
         $this->set('answer', $this->Numberle->getAnswer($this->getSeed()));
         $this->viewBuilder()->setOption('serialize', ['answer']);
