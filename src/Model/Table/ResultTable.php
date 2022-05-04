@@ -57,18 +57,30 @@ class ResultTable extends Table
      */
     public function validationDefault(Validator $validator): Validator
     {
+        $numberleConfig = new NumberleConfigComponent(new ComponentRegistry());
         $validator
             ->integer('seed', 'シードが整数値でありません。')
             ->requirePresence('seed', 'create', 'シードのフィールドが存在しません。')
-            ->notEmptyString('seed', 'シードが空です。');
+            ->notEmptyString('seed', 'シードが空です。')
+            ->greaterThanOrEqual(
+                'seed',
+                $numberleConfig->getSeedLowerLimit(),
+                'シードが0以下の値になっています。'
+            )
+            ->lessThanOrEqual(
+                'seed',
+                $numberleConfig->getSeedUpperLimit(),
+                'シードが1000より大きい値になっています。'
+            );
 
         $validator
             ->integer('numberOfTries', '挑戦回数が整数値でありません。')
             ->requirePresence('numberOfTries', 'create', '挑戦回数のフィールドが存在しません。')
             ->notEmptyString('numberOfTries', '挑戦回数が空です。')
+            ->greaterThanOrEqual('numberOfTries', -1, '挑戦回数に-1未満の値が入っています。')
             ->lessThanOrEqual(
                 'numberOfTries',
-                (new NumberleConfigComponent(new ComponentRegistry()))->getMaxNumberOfTries(),
+                $numberleConfig->getMaxNumberOfTries(),
                 '挑戦回数が最大挑戦回数を上回っています。'
             );
 

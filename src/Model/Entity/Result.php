@@ -28,6 +28,6 @@ class Result extends Entity
     protected $_accessible = [
         'seed' => true,
         'numberOfTries' => true,
-        'created' => true,
+        'created' => false,
     ];
 }
