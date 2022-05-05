@@ -421,6 +421,8 @@ return [
     ],
 
     'Cors' => [
-        'AllowOrigin' => ['https://ambmcmdmem.github.io']
+        'AllowOrigin' => [
+            'https://ambmcmdmem.github.io'
+        ]
     ]
 ];
