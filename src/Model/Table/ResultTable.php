@@ -77,7 +77,7 @@ class ResultTable extends Table
             ->integer('numberOfTries', '挑戦回数が整数値でありません。')
             ->requirePresence('numberOfTries', 'create', '挑戦回数のフィールドが存在しません。')
             ->notEmptyString('numberOfTries', '挑戦回数が空です。')
-            ->greaterThanOrEqual('numberOfTries', -1, '挑戦回数に-1未満の値が入っています。')
+            ->greaterThanOrEqual('numberOfTries', 0, '挑戦回数に0未満の値が入っています。')
             ->lessThanOrEqual(
                 'numberOfTries',
                 $numberleConfig->getMaxNumberOfTries(),
