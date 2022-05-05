@@ -13,7 +13,7 @@ use Cake\TestSuite\TestCase;
  *
  * @uses \App\Controller\NumberleApiController
  */
-class NumberleApiControllerTest extends TestCase
+final class NumberleApiControllerTest extends TestCase
 {
     use IntegrationTestTrait;
 
@@ -24,14 +24,14 @@ class NumberleApiControllerTest extends TestCase
      */
     protected $fixtures = [];
 
-    public function testAccessValidateSeedWithoutData(): void
+    final public function testAccessValidateSeedWithoutData(): void
     {
         $this->get('/numberleApi/validateSeed');
         $this->assertResponseCode(400, 'validateSeedへアクセスした際、エラーを送出しません。');
         $this->assertResponseContains('不正なリクエストです。');
     }
 
-    public function testAccessValidateSeedWithCorrectData(): void
+    final public function testAccessValidateSeedWithCorrectData(): void
     {
         $this->post('/numberleApi/validateSeed', [
             'seed' => '1',
@@ -40,17 +40,17 @@ class NumberleApiControllerTest extends TestCase
         $this->assertResponseOk('シード、checkDigitらが正しいのにvalidateSeedへアクセスできません。');
     }
 
-    public function testAccessValidateSeedWithWrongData(): void
+    final public function testAccessValidateSeedWithWrongData(): void
     {
         $this->post('/numberleApi/validateSeed', [
             'seed' => '0',
             'checkDigit' => '0'
         ]);
-        $this->assertResponseCode(400, 'シード、checkDigitらがおかしいのにエラーを送出しません。');
+        $this->assertResponseCode(400, 'シード、checkDigitらに不正な値が入っているのにエラーを送出しません。');
         $this->assertResponseContains('不正なリクエストです。');
     }
 
-    public function testAccessCollationWithCorrectData(): void
+    final public function testAccessCollationWithCorrectData(): void
     {
         $this->post('/numberleApi/collation', [
             'seed' => '1',
@@ -60,12 +60,33 @@ class NumberleApiControllerTest extends TestCase
         $this->assertResponseOk('適切な値を受け渡しているにもかかわらず、collationへとアクセスすることができません。');
     }
 
-    public function testAccessAnswerWithCorrectData(): void
+    final public function testAccessAnswerWithCorrectData(): void
     {
         $this->post('/numberleApi/answer', [
             'seed' => '1',
-            'checkDigit' => '1234509876'
+            'checkDigit' => '1234509876',
+            'numberOfTries' => '3'
         ]);
         $this->assertResponseOk('適切な値を受け渡しているにもかかわらず、answerへとアクセスすることができません。');
+    }
+
+    final public function testAccessAnswerWithIncorrectNumberOfTriesData(): void
+    {
+        $this->post('/numberleApi/answer', [
+            'seed' => '1',
+            'checkDigit' => '1234509876',
+            'numberOfTries' => '-1231231'
+        ]);
+        $this->assertResponseCode(400, 'numberOfTriesに不正な値が入っているのにエラーを送出しません。');
+        $this->assertResponseContains('不正なリクエストです。');
+    }
+
+    final public function testAccessTotallingWithCorrectData(): void
+    {
+        $this->post('/numberleApi/totalling', [
+            'seed' => '1',
+            'checkDigit' => '1234509876',
+        ]);
+        $this->assertResponseOk('適切な値を受け渡しているにもかかわらず、totallingへとアクセスすることができません。');
     }
 }

@@ -7,6 +7,8 @@ namespace App\Controller\Component\NumberleComponent\_Private;
 use \Validations;
 use \Validation;
 use \SeedException;
+use App\Controller\Component\NumberleConfigComponent;
+use Cake\Controller\ComponentRegistry;
 
 final class SeedValidations
 {
@@ -15,17 +17,18 @@ final class SeedValidations
 
     private function __construct()
     {
+        $numberleConfig = new NumberleConfigComponent(new ComponentRegistry());
         $this->validations = (new Validations())->next(
             new Validation(
-                function (array $props): bool {
-                    return $props['seed'] > 0;
+                function (array $props) use ($numberleConfig): bool {
+                    return $props['seed'] >= $numberleConfig->getSeedLowerLimit();
                 },
-                new SeedException('シードが0以下の値になっています。', 500)
+                new SeedException("シードが0以下の値になっています。", 500)
             )
         )->next(
             new Validation(
-                function (array $props): bool {
-                    return $props['seed'] <= 1000;
+                function (array $props) use ($numberleConfig): bool {
+                    return $props['seed'] <= $numberleConfig->getSeedUpperLimit();
                 },
                 new SeedException('シードが1000より大きな値になっています。', 500)
             )

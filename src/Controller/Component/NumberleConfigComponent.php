@@ -20,6 +20,8 @@ final class NumberleConfigComponent extends Component
 
     private int $maxNumberOfTries = 5;
     private int $maxNumberOfInput = 5;
+    private int $seedLowerLimit = 1;
+    private int $seedUpperLimit = 1000;
 
     final public function getMaxNumberOfTries(): int
     {
@@ -29,5 +31,15 @@ final class NumberleConfigComponent extends Component
     final public function getMaxNumberOfInput(): int
     {
         return $this->maxNumberOfInput;
+    }
+
+    final public function getSeedLowerLimit(): int
+    {
+        return $this->seedLowerLimit;
+    }
+
+    final public function getSeedUpperLimit(): int
+    {
+        return $this->seedUpperLimit;
     }
 }

@@ -36,6 +36,8 @@ class NumberleConfigComponentTest extends TestCase
     {
         $this->assertEquals(5, $this->NumberleConfig->getMaxNumberOfTries());
         $this->assertEquals(5, $this->NumberleConfig->getMaxNumberOfInput());
+        $this->assertEquals(1, $this->NumberleConfig->getSeedLowerLimit());
+        $this->assertEquals(1000, $this->NumberleConfig->getSeedUpperLimit());
     }
 
     /**
