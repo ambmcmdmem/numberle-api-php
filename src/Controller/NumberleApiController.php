@@ -80,10 +80,10 @@ final class NumberleApiController extends AppController
         $this->viewBuilder()->setOption('serialize', ['answer']);
     }
 
-    final public function totalling(): void
+    final public function totals(): void
     {
         $this->set(
-            'totalling',
+            'totals',
             $this->fetchTable('Result')
                 ->find('all', [
                     'conditions' => ['seed' => 22],
@@ -95,6 +95,6 @@ final class NumberleApiController extends AppController
                 ])
                 ->all()
         );
-        $this->viewBuilder()->setOption('serialize', ['totalling']);
+        $this->viewBuilder()->setOption('serialize', ['totals']);
     }
 }
