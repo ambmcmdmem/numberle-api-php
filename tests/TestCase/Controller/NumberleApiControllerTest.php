@@ -81,9 +81,9 @@ final class NumberleApiControllerTest extends TestCase
         $this->assertResponseContains('不正なリクエストです。');
     }
 
-    final public function testAccessTotallingWithCorrectData(): void
+    final public function testAccessTotalsWithCorrectData(): void
     {
-        $this->post('/numberleApi/totalling', [
+        $this->post('/numberleApi/totals', [
             'seed' => '1',
             'checkDigit' => '1234509876',
         ]);
